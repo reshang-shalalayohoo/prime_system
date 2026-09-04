@@ -1,0 +1,140 @@
+@import "tailwindcss";
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
+/* PRIME System — Design System */
+
+@theme {
+  /* Agricultural Green Palette */
+  --color-prime-50: #f0fdf4;
+  --color-prime-100: #dcfce7;
+  --color-prime-200: #bbf7d0;
+  --color-prime-300: #86efac;
+  --color-prime-400: #4ade80;
+  --color-prime-500: #22c55e;
+  --color-prime-600: #16a34a;
+  --color-prime-700: #15803d;
+  --color-prime-800: #166534;
+  --color-prime-900: #14532d;
+  --color-prime-950: #052e16;
+
+  /* Earth Tones */
+  --color-earth-50: #fffbeb;
+  --color-earth-100: #fef3c7;
+  --color-earth-200: #fde68a;
+  --color-earth-300: #fcd34d;
+  --color-earth-400: #fbbf24;
+  --color-earth-500: #f59e0b;
+  --color-earth-600: #d97706;
+  --color-earth-700: #b45309;
+  --color-earth-800: #92400e;
+  --color-earth-900: #78350f;
+
+  /* Water Blues */
+  --color-water-50: #f0f9ff;
+  --color-water-100: #e0f2fe;
+  --color-water-200: #bae6fd;
+  --color-water-300: #7dd3fc;
+  --color-water-400: #38bdf8;
+  --color-water-500: #0ea5e9;
+  --color-water-600: #0284c7;
+  --color-water-700: #0369a1;
+
+  /* Sidebar Dark */
+  --color-sidebar: #0f1a12;
+  --color-sidebar-hover: #1a2e1f;
+  --color-sidebar-active: #1e3a24;
+
+  /* Status Colors */
+  --color-deficient: #ef4444;
+  --color-sufficient: #22c55e;
+  --color-excess: #f59e0b;
+}
+
+/* Base Styles */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #f8faf9;
+  color: #1a2e1f;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f2;
+}
+::-webkit-scrollbar-thumb {
+  background: #a3bfac;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #7a9e85;
+}
+
+/* Card shine animation */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.loading-shimmer {
+  background: linear-gradient(90deg, #e8f5e9 25%, #c8e6c9 50%, #e8f5e9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Pulse animation for live indicators */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.2); }
+}
+
+.live-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Slide in animation */
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.animate-slide-in {
+  animation: slideInRight 0.3s ease-out;
+}
+
+/* Recharts customization */
+.recharts-cartesian-axis-tick-value {
+  font-size: 11px;
+  fill: #6b7280;
+}
+
+.recharts-legend-item-text {
+  font-size: 12px !important;
+  color: #374151 !important;
+}
+
+/* Mobile bottom nav safe area */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Responsive card grid for mobile */
+@media (max-width: 767px) {
+  .recharts-wrapper {
+    font-size: 10px;
+  }
+}
+

@@ -1,0 +1,21 @@
+{
+  "name": "prime-backend",
+  "version": "1.0.0",
+  "description": "PRIME - Palay Resource and Irrigation Monitoring for Fertilizer Efficiency (Backend)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "seed": "node src/database/seed.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "firebase-admin": "^14.3.0",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.24.2",
+    "socket.io": "^4.7.5"
+  }
+}
