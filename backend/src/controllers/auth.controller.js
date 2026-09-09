@@ -12,12 +12,15 @@ const AuthController = {
       }
 
       const identifier = username.trim();
+      // Try exact username match (case-insensitive via DB collation)
       let user = await UserModel.findByUsername(identifier);
+      // Fall back to email lookup
       if (!user) {
         user = await UserModel.findByEmail(identifier);
       }
-      if (!user && identifier.toLowerCase() === 'admin') {
-        user = await UserModel.findByUsername('prime_admin');
+      // Admin alias: 'admin' or 'prime_admin' -> find first active admin account
+      if (!user && ['admin', 'prime_admin'].includes(identifier.toLowerCase())) {
+        user = await UserModel.findFirstAdmin();
       }
 
       if (!user) {

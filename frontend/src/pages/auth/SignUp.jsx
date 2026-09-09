@@ -65,6 +65,8 @@ export default function SignUp() {
       const serverError = err.response?.data?.error
       if (serverError) {
         setError(serverError)
+      } else if (!err.response) {
+        setError('Cannot connect to backend server. Please verify the API server is online.')
       } else {
         setError('Registration failed. Please try again.')
       }

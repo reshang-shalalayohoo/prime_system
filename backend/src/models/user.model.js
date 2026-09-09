@@ -11,6 +11,13 @@ const UserModel = {
     return rows[0] || null;
   },
 
+  async findFirstAdmin() {
+    const [rows] = await query(
+      "SELECT * FROM users WHERE role = 'admin' AND is_active = 1 ORDER BY id ASC LIMIT 1"
+    );
+    return rows[0] || null;
+  },
+
   async findById(id) {
     const [rows] = await query(
       'SELECT id, username, email, full_name, role, is_active, created_at, updated_at FROM users WHERE id = ?',
