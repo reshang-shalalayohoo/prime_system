@@ -14,14 +14,14 @@ const getSocketUrl = () => {
   if (envSocketUrl && typeof envSocketUrl === 'string' && envSocketUrl.trim() !== '') {
     return envSocketUrl.trim().replace(/\/$/, '')
   }
-  const currentApiUrl = import.meta.env.VITE_API_URL || API_URL
+  const currentApiUrl = import.meta.env.VITE_API_URL
   if (currentApiUrl && typeof currentApiUrl === 'string' && currentApiUrl.startsWith('http')) {
     return currentApiUrl.replace(/\/api\/?$/, '')
   }
   if (import.meta.env.DEV) {
     return 'http://localhost:3000'
   }
-  return window.location.origin
+  return 'https://semiconductor-request-readings-sin.trycloudflare.com'
 }
 
 const SOCKET_URL = getSocketUrl()
