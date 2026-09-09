@@ -22,7 +22,9 @@ function getPool() {
       // Ensure dates come back as JS Date objects
       dateStrings: true,
       // Enable multiple statements for schema import
-      multipleStatements: false
+      multipleStatements: false,
+      // SSL for cloud MySQL providers (Aiven, TiDB, PlanetScale)
+      ...(process.env.MYSQL_SSL === 'true' && { ssl: { rejectUnauthorized: true } })
     });
   }
   return pool;
