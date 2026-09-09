@@ -1,8 +1,28 @@
 import axios from 'axios'
 
-const API_URL = import.meta.env.VITE_API_URL || '/api'
+// Determine base API URL:
+// 1. Explicit VITE_API_URL from environment variables (e.g. Vercel production)
+// 2. Local development fallback to http://localhost:3000/api
+// 3. Fallback to relative /api
+const getApiBaseUrl = () => {
+  const envUrl = import.meta.env.VITE_API_URL
+  if (envUrl && typeof envUrl === 'string' && envUrl.trim() !== '') {
+    return envUrl.trim().replace(/\/$/, '')
+  }
+  if (import.meta.env.DEV) {
+    return 'http://localhost:3000/api'
+  }
+  return '/api'
+}
 
-const api = axios.create({ baseURL: API_URL })
+const API_URL = getApiBaseUrl()
+
+const api = axios.create({ 
+  baseURL: API_URL,
+  headers: {
+    'Content-Type': 'application/json'
+  }
+})
 
 api.interceptors.request.use(config => {
   const token = localStorage.getItem('prime_token')
@@ -40,5 +60,5 @@ const authService = {
   }
 }
 
-export { api }
+export { api, API_URL }
 export default authService

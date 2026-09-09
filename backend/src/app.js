@@ -17,20 +17,59 @@ const activityRoutes = require('./routes/activity.routes');
 const app = express();
 
 // Middleware — support web + mobile origins
-const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173')
-  .split(',').map(s => s.trim());
+const getCorsOrigins = () => {
+  const envOrigins = process.env.CORS_ORIGIN
+    ? process.env.CORS_ORIGIN.split(',').map(s => s.trim().replace(/\/$/, ''))
+    : [];
+
+  const defaults = [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'http://localhost:3000',
+    'http://127.0.0.1:5173',
+    'http://127.0.0.1:5174'
+  ];
+
+  return [...new Set([...defaults, ...envOrigins])];
+};
+
+const allowedOrigins = getCorsOrigins();
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (mobile apps, curl, Postman)
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(null, true); // permissive in dev
+    // Allow requests with no origin (mobile apps, curl, Postman, server-to-server)
+    if (!origin) return callback(null, true);
+
+    const cleanOrigin = origin.replace(/\/$/, '');
+
+    // Allow configured origins or wildcard
+    if (allowedOrigins.includes('*') || allowedOrigins.includes(cleanOrigin)) {
+      return callback(null, true);
     }
+
+    // Allow any Vercel deployment (production, preview branches)
+    if (cleanOrigin.endsWith('.vercel.app')) {
+      return callback(null, true);
+    }
+
+    // Allow local network IP addresses for local testing across devices
+    if (
+      cleanOrigin.includes('localhost') ||
+      cleanOrigin.includes('127.0.0.1') ||
+      cleanOrigin.includes('192.168.') ||
+      cleanOrigin.includes('10.0.')
+    ) {
+      return callback(null, true);
+    }
+
+    // Permissive fallback
+    return callback(null, true);
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
+app.options('*', cors());
 app.use(express.json());
 
 // Health check

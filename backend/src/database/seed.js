@@ -6,13 +6,18 @@ require('dotenv').config({ path: path.join(__dirname, '..', '..', '.env') });
 
 const schemaPath = path.join(__dirname, 'schema.sql');
 
+const sslConfig = (process.env.MYSQL_SSL === 'true' || process.env.MYSQL_SSL === '1')
+  ? { rejectUnauthorized: process.env.MYSQL_SSL_REJECT_UNAUTHORIZED === 'true' }
+  : undefined;
+
 const dbConfig = {
   host: process.env.MYSQL_HOST || 'localhost',
   port: parseInt(process.env.MYSQL_PORT, 10) || 3306,
   user: process.env.MYSQL_USER || 'root',
   password: process.env.MYSQL_PASSWORD || '',
   multipleStatements: true,
-  dateStrings: true
+  dateStrings: true,
+  ...(sslConfig && { ssl: sslConfig })
 };
 
 const DB_NAME = process.env.MYSQL_DATABASE || 'prime_db';
@@ -22,16 +27,20 @@ async function seed() {
   console.log(`   Host: ${dbConfig.host}:${dbConfig.port}`);
   console.log(`   Database: ${DB_NAME}`);
 
-  // Connect without specifying a database first to create it
-  const rootConn = await mysql.createConnection(dbConfig);
+  // Attempt database creation for local MySQL (XAMPP); skip or ignore if on restricted cloud host
+  try {
+    const rootConn = await mysql.createConnection(dbConfig);
+    try {
+      await rootConn.query(`CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`);
+      console.log(`   Database '${DB_NAME}' ensured`);
+    } finally {
+      await rootConn.end();
+    }
+  } catch (err) {
+    console.log(`   Notice: Using existing database '${DB_NAME}' (${err.message})`);
+  }
 
-  // Drop and recreate the database for a clean seed
-  await rootConn.query(`DROP DATABASE IF EXISTS \`${DB_NAME}\``);
-  await rootConn.query(`CREATE DATABASE \`${DB_NAME}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`);
-  console.log(`   Database '${DB_NAME}' created`);
-  await rootConn.end();
-
-  // Connect to the new database
+  // Connect directly to target database
   const conn = await mysql.createConnection({
     ...dbConfig,
     database: DB_NAME
