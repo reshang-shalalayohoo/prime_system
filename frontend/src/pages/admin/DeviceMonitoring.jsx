@@ -400,7 +400,7 @@ export default function DeviceMonitoring() {
                     />
                     <div className="min-w-0">
                       <p className="text-sm font-semibold text-gray-800 truncate">
-                        ${device.device_name || device.device_code}
+                        {device.device_name || device.device_code}
                       </p>
                       <p className="text-xs text-gray-500 truncate">
                         {device.field_name || 'Unassigned'} — {device.field_location || ''}
