@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import Card from '../../components/common/Card'
@@ -12,12 +12,14 @@ import { Map, Cpu, Users, Bell, Lightbulb, Clock } from 'lucide-react'
 export default function AdminDashboard() {
   const { socket } = useAuth()
   const navigate = useNavigate()
+  const mapSectionRef = useRef(null)
   const [report, setReport] = useState(null)
   const [activities, setActivities] = useState([])
   const [mapDevices, setMapDevices] = useState([])
   const [loading, setLoading] = useState(true)
   const [selectedDeviceId, setSelectedDeviceId] = useState(null)
   const [showDetailModal, setShowDetailModal] = useState(false)
+  const [focusDeviceId, setFocusDeviceId] = useState(null)
 
   const fetchData = () => {
     Promise.all([
@@ -47,6 +49,14 @@ export default function AdminDashboard() {
   const handleViewDevice = (deviceId) => {
     setSelectedDeviceId(deviceId)
     setShowDetailModal(true)
+  }
+
+  const handleLocateOnMap = (deviceId) => {
+    setFocusDeviceId(null)
+    setTimeout(() => {
+      setFocusDeviceId(deviceId)
+      mapSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }, 50)
   }
 
   if (loading) {
@@ -79,17 +89,17 @@ export default function AdminDashboard() {
         <Card title="Recommendations" value={ov.totalRecommendations || 0} icon={Lightbulb} color="prime" />
       </div>
 
-      {/* Sensor Map */}
-      <Card title="Sensor Map — All Devices">
-        <div className="mb-3 flex items-center gap-4 flex-wrap">
-          <div className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-green-500" /><span className="text-xs text-gray-500">Sufficient</span></div>
-          <div className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-amber-500" /><span className="text-xs text-gray-500">Moderate</span></div>
-          <div className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-red-500" /><span className="text-xs text-gray-500">Critical</span></div>
-          <div className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-gray-400" /><span className="text-xs text-gray-500">No Data</span></div>
-          <span className="text-xs text-gray-400 ml-auto">{mapDevices.filter(d => d.latitude).length} devices with GPS</span>
-        </div>
-        <DeviceMapView devices={mapDevices} onDeviceClick={handleViewDevice} height="350px" />
-      </Card>
+      {/* Leaflet Sensor Map */}
+      <div ref={mapSectionRef}>
+        <Card title="Sensor Map — All Devices (Interactive Leaflet Map)">
+          <DeviceMapView
+            devices={mapDevices}
+            onDeviceClick={handleViewDevice}
+            focusDeviceId={focusDeviceId}
+            height="380px"
+          />
+        </Card>
+      </div>
 
       {/* Attention + Activity Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -110,12 +120,23 @@ export default function AdminDashboard() {
                         <p className="text-xs text-gray-500 truncate">{device.field_name || 'Unassigned'}</p>
                       </div>
                     </div>
-                    <button
-                      onClick={() => handleViewDevice(device.id)}
-                      className="text-xs font-medium text-prime-600 hover:text-prime-700 hover:underline flex-shrink-0 ml-2"
-                    >
-                      View →
-                    </button>
+                    <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+                      {device.latitude && device.longitude && (
+                        <button
+                          onClick={() => handleLocateOnMap(device.id)}
+                          className="text-xs font-medium text-gray-600 hover:text-prime-700 px-2 py-1 bg-white rounded border border-gray-200"
+                          title="Locate on map"
+                        >
+                          Locate
+                        </button>
+                      )}
+                      <button
+                        onClick={() => handleViewDevice(device.id)}
+                        className="text-xs font-medium text-prime-600 hover:text-prime-700 hover:underline"
+                      >
+                        Details →
+                      </button>
+                    </div>
                   </div>
                 )
               })}

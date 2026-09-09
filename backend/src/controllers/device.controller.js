@@ -1,4 +1,5 @@
 const DeviceModel = require('../models/device.model');
+const FieldModel = require('../models/field.model');
 const ActivityLogModel = require('../models/activityLog.model');
 const { classifyReading } = require('../services/severity.service');
 const crypto = require('crypto');
@@ -168,6 +169,16 @@ const DeviceController = {
       res.json({ count });
     } catch (err) {
       console.error('Get online count error:', err);
+      res.status(500).json({ error: 'Internal server error.' });
+    }
+  },
+
+  async getFields(req, res) {
+    try {
+      const fields = await FieldModel.getAll();
+      res.json(fields);
+    } catch (err) {
+      console.error('Get fields error:', err);
       res.status(500).json({ error: 'Internal server error.' });
     }
   }

@@ -7,6 +7,7 @@ const { requireRole } = require('../middleware/role.middleware');
 router.get('/', authMiddleware, requireRole('admin'), DeviceController.getAll);
 router.get('/map-data', authMiddleware, requireRole('admin'), DeviceController.getMapData);
 router.get('/online-count', authMiddleware, DeviceController.getOnlineCount);
+router.get('/fields', authMiddleware, requireRole('admin'), DeviceController.getFields);
 router.get('/:id/detail', authMiddleware, requireRole('admin'), DeviceController.getDetail);
 router.post('/', authMiddleware, requireRole('admin'), DeviceController.create);
 router.patch('/:id', authMiddleware, requireRole('admin'), DeviceController.update);

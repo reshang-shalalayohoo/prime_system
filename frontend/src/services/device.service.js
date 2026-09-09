@@ -28,6 +28,10 @@ const deviceService = {
   async getOnlineCount() {
     const { data } = await api.get('/devices/online-count')
     return data
+  },
+  async getFields() {
+    const { data } = await api.get('/devices/fields')
+    return data
   }
 }
 

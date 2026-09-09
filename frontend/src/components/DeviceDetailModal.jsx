@@ -143,6 +143,7 @@ export default function DeviceDetailModal({ deviceId, isOpen, onClose }) {
               <DeviceMapView
                 devices={[{ ...device, severity: device.severity }]}
                 height="200px"
+                showLegend={false}
               />
               <p className="text-[10px] text-gray-400 mt-1 text-center">
                 Coordinates: {device.latitude.toFixed(6)}, {device.longitude.toFixed(6)}
