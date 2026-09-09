@@ -11,7 +11,15 @@ const AuthController = {
         return res.status(400).json({ error: 'Username and password are required.' });
       }
 
-      const user = await UserModel.findByUsername(username);
+      const identifier = username.trim();
+      let user = await UserModel.findByUsername(identifier);
+      if (!user) {
+        user = await UserModel.findByEmail(identifier);
+      }
+      if (!user && identifier.toLowerCase() === 'admin') {
+        user = await UserModel.findByUsername('prime_admin');
+      }
+
       if (!user) {
         return res.status(401).json({ error: 'Invalid username or password.' });
       }

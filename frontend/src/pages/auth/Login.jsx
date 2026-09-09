@@ -68,14 +68,14 @@ export default function Login() {
 
       <form onSubmit={handleSubmit} className="space-y-4 mt-4">
         <div>
-          <label className="block text-sm font-medium text-prime-200 mb-1.5">Username</label>
+          <label className="block text-sm font-medium text-prime-200 mb-1.5">Username or Email</label>
           <input
             id="login-username"
             type="text"
             value={username}
             onChange={e => setUsername(e.target.value)}
             className="w-full px-4 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-prime-400 focus:border-transparent transition-all"
-            placeholder="Enter your username"
+            placeholder="Enter your username or email"
             required
             autoFocus
           />
