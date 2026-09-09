@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom'
 import Sidebar from '../components/common/Sidebar'
 import Topbar from '../components/common/Topbar'
-import { LayoutDashboard, Lightbulb, FlaskConical, Bell, FileBarChart } from 'lucide-react'
+import { LayoutDashboard, Lightbulb, FlaskConical, Bell, FileBarChart, HelpCircle } from 'lucide-react'
 
 const farmerNav = [
   { path: '', label: 'Dashboard', icon: LayoutDashboard },
@@ -9,6 +9,7 @@ const farmerNav = [
   { path: '/fertilizer-log', label: 'Fertilizer Log', icon: FlaskConical },
   { path: '/alerts', label: 'Alerts', icon: Bell },
   { path: '/reports', label: 'Reports', icon: FileBarChart },
+  { path: '/help', label: 'Help & Guide', icon: HelpCircle },
 ]
 
 export default function FarmerLayout() {

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import Card from '../../components/common/Card'
 import StatusBadge from '../../components/common/StatusBadge'
@@ -6,7 +7,7 @@ import NutrientTrendChart from '../../components/charts/NutrientTrendChart'
 import SoilMoistureChart from '../../components/charts/SoilMoistureChart'
 import sensorService from '../../services/sensor.service'
 import recommendationService from '../../services/recommendation.service'
-import { Droplets, Waves, Leaf, Clock, Lightbulb, FlaskConical } from 'lucide-react'
+import { Droplets, Waves, Leaf, Clock, Lightbulb, FlaskConical, HelpCircle, BookOpen, ArrowRight } from 'lucide-react'
 
 export default function FarmerDashboard() {
   const { socket } = useAuth()
@@ -73,18 +74,50 @@ export default function FarmerDashboard() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">Farm Dashboard</h1>
           <p className="text-sm text-gray-500 mt-0.5">Real-time soil and nutrient monitoring</p>
         </div>
-        {latest && (
-          <div className="flex items-center gap-2 text-xs text-gray-400 bg-white px-3 py-1.5 rounded-full shadow-sm">
-            <span className="w-2 h-2 bg-green-500 rounded-full live-dot" />
-            Live
-          </div>
-        )}
+        <div className="flex items-center gap-2.5">
+          <Link
+            to="/farmer/help"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-prime-50 hover:bg-prime-100 text-prime-700 border border-prime-200 text-xs font-semibold rounded-full shadow-sm transition-colors"
+          >
+            <HelpCircle size={14} />
+            Farmer Guide & Help
+          </Link>
+          {latest && (
+            <div className="flex items-center gap-2 text-xs text-gray-400 bg-white px-3 py-1.5 rounded-full shadow-sm border border-gray-100">
+              <span className="w-2 h-2 bg-green-500 rounded-full live-dot" />
+              Live
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* Getting Started Guide Banner (visible especially when no readings yet) */}
+      {!latest && (
+        <div className="p-4 bg-gradient-to-r from-prime-50 to-emerald-50 border border-prime-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 bg-prime-600 text-white rounded-xl flex items-center justify-center flex-shrink-0">
+              <BookOpen size={18} />
+            </div>
+            <div>
+              <h4 className="text-xs font-bold text-gray-800">First time using PRIME?</h4>
+              <p className="text-[11px] text-gray-600">
+                Learn how the system works and what steps to take first to monitor your rice field.
+              </p>
+            </div>
+          </div>
+          <Link
+            to="/farmer/help"
+            className="inline-flex items-center gap-1 text-xs font-bold text-prime-700 hover:text-prime-800 hover:underline flex-shrink-0"
+          >
+            Read Step-by-Step Guide <ArrowRight size={13} />
+          </Link>
+        </div>
+      )}
 
       {/* Metric Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

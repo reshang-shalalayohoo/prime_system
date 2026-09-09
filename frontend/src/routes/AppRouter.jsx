@@ -11,6 +11,7 @@ import Recommendations from '../pages/farmer/Recommendations'
 import FertilizerLog from '../pages/farmer/FertilizerLog'
 import Alerts from '../pages/farmer/Alerts'
 import FarmerReports from '../pages/farmer/FarmerReports'
+import FarmerHelp from '../pages/farmer/FarmerHelp'
 import AdminDashboard from '../pages/admin/AdminDashboard'
 import DeviceMonitoring from '../pages/admin/DeviceMonitoring'
 import ReferenceConfig from '../pages/admin/ReferenceConfig'
@@ -51,6 +52,7 @@ export default function AppRouter() {
         <Route path="fertilizer-log" element={<FertilizerLog />} />
         <Route path="alerts" element={<Alerts />} />
         <Route path="reports" element={<FarmerReports />} />
+        <Route path="help" element={<FarmerHelp />} />
       </Route>
 
       {/* Admin routes */}
