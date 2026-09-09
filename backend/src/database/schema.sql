@@ -34,6 +34,8 @@ CREATE TABLE IF NOT EXISTS devices (
   api_key VARCHAR(255) NOT NULL UNIQUE,
   device_name VARCHAR(255),
   field_id INT,
+  latitude DOUBLE DEFAULT NULL,
+  longitude DOUBLE DEFAULT NULL,
   status ENUM('online', 'offline', 'fault') NOT NULL DEFAULT 'offline',
   battery_level DOUBLE DEFAULT 100.0,
   last_communication DATETIME,

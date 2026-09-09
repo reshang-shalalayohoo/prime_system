@@ -45,10 +45,18 @@ const AuthController = {
 
   async register(req, res) {
     try {
-      const { username, email, password, fullName, role } = req.body;
+      const { username, email, password, fullName } = req.body;
 
       if (!username || !password || !fullName) {
         return res.status(400).json({ error: 'Username, password, and full name are required.' });
+      }
+
+      if (username.length < 3) {
+        return res.status(400).json({ error: 'Username must be at least 3 characters.' });
+      }
+
+      if (password.length < 6) {
+        return res.status(400).json({ error: 'Password must be at least 6 characters.' });
       }
 
       const existing = await UserModel.findByUsername(username);
@@ -56,13 +64,21 @@ const AuthController = {
         return res.status(409).json({ error: 'Username already exists.' });
       }
 
+      if (email) {
+        const existingEmail = await UserModel.findByEmail(email);
+        if (existingEmail) {
+          return res.status(409).json({ error: 'Email already in use.' });
+        }
+      }
+
       const passwordHash = await bcrypt.hash(password, 10);
+      // Public registration ALWAYS creates farmer accounts — admin accounts are created separately
       const user = await UserModel.create({
         username,
         email,
         passwordHash,
         fullName,
-        role: role || 'farmer'
+        role: 'farmer'
       });
 
       const token = generateToken(user);

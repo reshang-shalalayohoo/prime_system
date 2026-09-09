@@ -16,9 +16,19 @@ const activityRoutes = require('./routes/activity.routes');
 
 const app = express();
 
-// Middleware
+// Middleware — support web + mobile origins
+const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173')
+  .split(',').map(s => s.trim());
+
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, Postman)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(null, true); // permissive in dev
+    }
+  },
   credentials: true
 }));
 app.use(express.json());

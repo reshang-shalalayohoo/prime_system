@@ -1,6 +1,7 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import { useToast } from '../../context/ToastContext'
 import Button from '../../components/common/Button'
 import AlertBanner from '../../components/common/AlertBanner'
 
@@ -10,19 +11,43 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
   const { login } = useAuth()
+  const toast = useToast()
   const navigate = useNavigate()
+  const location = useLocation()
+
+  // Show messages passed via navigation state (from signup or logout)
+  useEffect(() => {
+    if (location.state?.message) {
+      if (location.state.type === 'success') {
+        setSuccessMessage(location.state.message)
+        toast.success(location.state.message)
+      } else if (location.state.type === 'info') {
+        toast.info(location.state.message)
+      }
+      // Clear navigation state so message doesn't re-appear on refresh
+      window.history.replaceState({}, document.title)
+    }
+  }, [location.state])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
+    setSuccessMessage('')
     setLoading(true)
 
     try {
       const user = await login(username, password)
+      toast.success(`Welcome back, ${user.fullName || user.username}!`)
       navigate(user.role === 'admin' ? '/admin' : '/farmer', { replace: true })
     } catch (err) {
-      setError(err.response?.data?.error || 'Login failed. Please check your credentials.')
+      const serverError = err.response?.data?.error
+      if (serverError) {
+        setError(serverError)
+      } else {
+        setError('Login failed. Please check your credentials.')
+      }
     } finally {
       setLoading(false)
     }
@@ -31,6 +56,13 @@ export default function Login() {
   return (
     <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-white/10">
       <h2 className="text-xl font-semibold text-white text-center mb-6">Sign In</h2>
+
+      {successMessage && (
+        <div className="flex items-start gap-2.5 px-4 py-3 bg-green-500/15 border border-green-400/30 rounded-lg mb-4">
+          <i className="bi bi-check-circle-fill text-green-400 mt-0.5" />
+          <p className="text-sm text-green-200">{successMessage}</p>
+        </div>
+      )}
 
       {error && <AlertBanner type="error" message={error} onDismiss={() => setError('')} autoDismiss={0} />}
 
@@ -77,24 +109,13 @@ export default function Login() {
         </Button>
       </form>
 
-      <div className="mt-6 pt-4 border-t border-white/10">
-        <p className="text-xs text-white/40 text-center">Demo Accounts</p>
-        <div className="grid grid-cols-2 gap-2 mt-2">
-          <button
-            type="button"
-            onClick={() => { setUsername('farmer1'); setPassword('password123') }}
-            className="text-xs text-prime-300 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg py-2 px-3 transition-colors text-center"
-          >
-            <i className="bi bi-tree mr-1" /> Farmer
-          </button>
-          <button
-            type="button"
-            onClick={() => { setUsername('admin1'); setPassword('password123') }}
-            className="text-xs text-prime-300 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg py-2 px-3 transition-colors text-center"
-          >
-            <i className="bi bi-gear mr-1" /> Admin
-          </button>
-        </div>
+      <div className="mt-6 pt-4 border-t border-white/10 text-center">
+        <p className="text-sm text-white/50">
+          Don't have an account?{' '}
+          <Link to="/signup" className="text-prime-300 hover:text-white font-medium transition-colors">
+            Sign Up as Farmer
+          </Link>
+        </p>
       </div>
     </div>
   )

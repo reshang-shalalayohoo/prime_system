@@ -23,7 +23,10 @@ function initFirebase() {
   const privateKey = process.env.FIREBASE_PRIVATE_KEY;
   const databaseURL = process.env.FIREBASE_DATABASE_URL;
 
-  if (!projectId || !clientEmail || !privateKey || !databaseURL) {
+  if (!projectId || !clientEmail || !privateKey || !databaseURL
+      || projectId === 'your-project-id'
+      || clientEmail.includes('xxxxx')
+      || privateKey.includes('...')) {
     console.warn('⚠️  Firebase configuration incomplete — sensor connection monitoring disabled.');
     console.warn('   Set FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY, FIREBASE_DATABASE_URL in .env');
     return null;

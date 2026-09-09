@@ -6,6 +6,11 @@ const UserModel = {
     return rows[0] || null;
   },
 
+  async findByEmail(email) {
+    const [rows] = await query('SELECT * FROM users WHERE email = ?', [email]);
+    return rows[0] || null;
+  },
+
   async findById(id) {
     const [rows] = await query(
       'SELECT id, username, email, full_name, role, is_active, created_at, updated_at FROM users WHERE id = ?',

@@ -5,6 +5,7 @@ import AuthLayout from '../layouts/AuthLayout'
 import FarmerLayout from '../layouts/FarmerLayout'
 import AdminLayout from '../layouts/AdminLayout'
 import Login from '../pages/auth/Login'
+import SignUp from '../pages/auth/SignUp'
 import FarmerDashboard from '../pages/farmer/FarmerDashboard'
 import Recommendations from '../pages/farmer/Recommendations'
 import FertilizerLog from '../pages/farmer/FertilizerLog'
@@ -36,6 +37,7 @@ export default function AppRouter() {
       {/* Auth routes */}
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
       </Route>
 
       {/* Farmer routes */}
